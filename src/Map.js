@@ -41,7 +41,7 @@ const Map = function (props) {
         zoom,
       });
     }
-  }, [data.length]);
+  },  [data, viewport]);
 
   return (
     <ReactMapGL

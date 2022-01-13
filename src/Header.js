@@ -7,6 +7,7 @@ const Header = (props) => (
         <img
           src="/images/tulsa-flag-sigil.png"
           className="w-20 absolute"
+          alt="no"
         />
         <h1 className="text-bone ml-22">Galleries Tulsa</h1>
       </div>
