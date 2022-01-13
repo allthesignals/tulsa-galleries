@@ -1,24 +1,53 @@
-import React from 'react';
-import ReactMapGL, { Popup } from 'react-map-gl';
+import { useState, useEffect } from 'react';
+import ReactMapGL, { Popup, WebMercatorViewport } from 'react-map-gl';
+import bbox from '@turf/bbox';
+import { lineString } from '@turf/helpers';
 import Pins from './Pins.js';
 
 const MAPBOX_GL_TOKEN = 
   'pk.eyJ1Ijoid21hdHRnYXJkbmVyIiwiYSI6ImNreWF4eTlhNzBhMjkybnBscWwwcTA2M3EifQ.GRfK3-Kc7CC72BDwfywAsQ';
 const TULSA = [36.1540, -95.9928];
+const DEFAULT_VIEWPORT = {
+  latitude: TULSA[0],
+  longitude: TULSA[1],
+  zoom: 8,
+
+  // todo: need to calculate exact pixel values instead of css percentages
+  width: 600,
+  height: 800,
+};
 
 const Map = function (props) {
   const { data } = props;
 
-  const [viewport, setViewport] = React.useState({
-    latitude: TULSA[0],
-    longitude: TULSA[1],
-    zoom: 8,
-  });
-  const [popupInfo, setPopupInfo] = React.useState(null);
+  const [viewport, setViewport] = useState(DEFAULT_VIEWPORT);
+  const [popupInfo, setPopupInfo] = useState(null);
+
+  useEffect(() => {
+    if (data.length) {
+      const line = lineString(data.map(point => [point.Longitude, point.Latitude]));
+      const [minLng, minLat, maxLng, maxLat] = bbox(line);
+      const vp = new WebMercatorViewport(DEFAULT_VIEWPORT);
+      const { longitude, latitude, zoom } = vp.fitBounds(
+        [[minLng, minLat], [maxLng, maxLat]], {
+          padding: 20
+        },
+      );
+
+      setViewport({
+        ...viewport,
+        longitude,
+        latitude,
+        zoom,
+      });
+    }
+  }, [data.length]);
 
   return (
     <ReactMapGL
       {...viewport}
+
+      /* todo: need to calculate exact pixel values instead of css percentages */
       width='100%'
       height='100%'
       onViewportChange={viewport => setViewport(viewport)}
@@ -44,9 +73,5 @@ const Map = function (props) {
     </ReactMapGL>
   );
 }
-
-Map.propTypes = {};
-
-Map.defaultProps = {};
 
 export default Map;

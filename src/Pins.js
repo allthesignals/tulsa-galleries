@@ -14,8 +14,4 @@ const Pins = function(props) {
   )
 }
 
-Pins.propTypes = {};
-
-Pins.defaultProps = {};
-
 export default React.memo(Pins);

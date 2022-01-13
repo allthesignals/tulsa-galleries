@@ -11,8 +11,4 @@ const MapToggle = (props) => (
   </div>
 );
 
-MapToggle.propTypes = {};
-
-MapToggle.defaultProps = {};
-
 export default MapToggle;

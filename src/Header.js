@@ -14,8 +14,4 @@ const Header = (props) => (
   </div>
 );
 
-Header.propTypes = {};
-
-Header.defaultProps = {};
-
 export default Header;
