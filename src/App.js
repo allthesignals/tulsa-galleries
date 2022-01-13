@@ -1,39 +1,54 @@
-import * as React from 'react';
-import ReactMapGL from 'react-map-gl';
-import Header from './components/Header/Header.js';
+import { useEffect, useState } from 'react';
 import { csv } from 'd3-fetch';
+import Header from './Header';
+import Map from './Map';
+import List from './List'
+import MapToggle from './MapToggle';
 import './App.css';
 
-const MAPBOX_GL_TOKEN = 
-  'pk.eyJ1Ijoid21hdHRnYXJkbmVyIiwiYSI6ImNreWF4eTlhNzBhMjkybnBscWwwcTA2M3EifQ.GRfK3-Kc7CC72BDwfywAsQ';
 const GALLERIES_URL =
   'https://docs.google.com/spreadsheets/d/e/2PACX-1vRV476aaXFgAknoXAMO7nnbSbm0oIRdggzeRw7LUSv7QwMAQHrtM2rC3bRJmCOaOK_IGWA2wcfpj3eK/pub?gid=0&single=true&output=csv';
 
 function App() {
-  const [viewport, setViewport] = React.useState({
-    latitude: 36.1540,
-    longitude: -95.9928,
-    zoom: 8,
-  });
+  const [isMapVisible, toggleMap] = useState(true);
+  const [galleries, setGalleries] = useState([]);
 
-  const [galleries, setGalleries] = React.useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const galleries = await csv(GALLERIES_URL, (d) => {
+        return {
+          ...d,
+          Longitude: +d.Longitude,
+          Latitude: +d.Latitude,
+        };
+      });
 
-  React.useEffect(async () => {
-    const galleries = await csv(GALLERIES_URL);
+      setGalleries(galleries);
+    };
 
-    setGalleries(galleries);
+    fetchData();
   }, []);
 
   return (
     <>
-      <Header />
-      <ReactMapGL
-        {...viewport}
-        width='100%'
-        height='100%'
-        onViewportChange={viewport => setViewport(viewport)}
-        mapboxApiAccessToken={MAPBOX_GL_TOKEN}
+      <Header
+        float={isMapVisible}
       />
+
+      {isMapVisible ?
+        <Map
+          data={galleries}
+        />
+      : <List
+          data={galleries}
+        />
+      }
+
+      <MapToggle
+        handleClick={() => toggleMap(!isMapVisible)}
+      >
+        <h1>{ isMapVisible ? 'List' : 'Map' }</h1>
+      </MapToggle>
     </>
   );
 }

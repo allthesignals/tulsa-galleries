@@ -1,9 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import './Header.css';
 
-const Header = () => (
-  <div className="absolute top-0 w-full z-10">
+const Header = (props) => (
+  <div className={props.float ? "absolute top-0 w-full z-10" : "w-full"}>
     <div className="bg-national-flag-blue border-b-12 border-mustard p-2 shadow-md">
       <div className="container mx-auto">
         <img
