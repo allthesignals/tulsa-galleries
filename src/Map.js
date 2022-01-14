@@ -35,13 +35,12 @@ const Map = function (props) {
       );
 
       setViewport({
-        ...viewport,
         longitude,
         latitude,
         zoom,
       });
     }
-  },  [data, viewport]);
+  }, [data]);
 
   return (
     <ReactMapGL
