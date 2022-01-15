@@ -13,6 +13,8 @@ function App() {
   const [isMapVisible, toggleMap] = useState(true);
   const [galleries, setGalleries] = useState([]);
 
+  // https://betterprogramming.pub/stop-lying-to-react-about-missing-dependencies-10612e9aeeda
+  // https://overreacted.io/a-complete-guide-to-useeffect/
   useEffect(() => {
     const fetchData = async () => {
       const galleries = await csv(GALLERIES_URL, (d) => {

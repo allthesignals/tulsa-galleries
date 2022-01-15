@@ -25,14 +25,7 @@ const Map = function (props) {
 
   useEffect(() => {
     if (data.length) {
-      const line = lineString(data.map(point => [point.Longitude, point.Latitude]));
-      const [minLng, minLat, maxLng, maxLat] = bbox(line);
-      const vp = new WebMercatorViewport(DEFAULT_VIEWPORT);
-      const { longitude, latitude, zoom } = vp.fitBounds(
-        [[minLng, minLat], [maxLng, maxLat]], {
-          padding: 20
-        },
-      );
+      const { longitude, latitude, zoom } = computeBoundingBox(data);
 
       setViewport({
         longitude,
@@ -70,6 +63,18 @@ const Map = function (props) {
         </Popup>
       )}
     </ReactMapGL>
+  );
+}
+
+function computeBoundingBox(data) {
+  const line = lineString(data.map(point => [point.Longitude, point.Latitude]));
+  const [minLng, minLat, maxLng, maxLat] = bbox(line);
+  const vp = new WebMercatorViewport(DEFAULT_VIEWPORT);
+
+  return vp.fitBounds(
+    [[minLng, minLat], [maxLng, maxLat]], {
+      padding: 20
+    },
   );
 }
 

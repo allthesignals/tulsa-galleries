@@ -23,4 +23,4 @@ const Marker = (props) => (
   </MapboxMarker>
 );
 
-export default Marker;
+export default React.memo(Marker);
