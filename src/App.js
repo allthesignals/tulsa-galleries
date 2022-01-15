@@ -18,6 +18,7 @@ function App() {
       const galleries = await csv(GALLERIES_URL, (d) => {
         return {
           ...d,
+          Featured: d.Featured === 'TRUE' ? true : false,
           Longitude: +d.Longitude,
           Latitude: +d.Latitude,
         };
