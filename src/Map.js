@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import ReactMapGL, { Popup, WebMercatorViewport } from 'react-map-gl';
 import bbox from '@turf/bbox';
 import { lineString } from '@turf/helpers';
@@ -11,21 +11,19 @@ const DEFAULT_VIEWPORT = {
   latitude: TULSA[0],
   longitude: TULSA[1],
   zoom: 8,
-
-  // todo: need to calculate exact pixel values instead of css percentages
-  width: 600,
-  height: 800,
 };
 
 const Map = function (props) {
   const { data } = props;
 
+  const mapRef = useRef(null);
   const [viewport, setViewport] = useState(DEFAULT_VIEWPORT);
   const [popupInfo, setPopupInfo] = useState(null);
 
   useEffect(() => {
     if (data.length) {
-      const { longitude, latitude, zoom } = computeBoundingBox(data);
+      const { width, height } = mapRef.current.getBoundingClientRect();
+      const { longitude, latitude, zoom } = computeBoundingBox(data, { width, height });
 
       setViewport({
         longitude,
@@ -36,40 +34,46 @@ const Map = function (props) {
   }, [data]);
 
   return (
-    <ReactMapGL
-      {...viewport}
-
-      /* todo: need to calculate exact pixel values instead of css percentages */
-      width='100%'
-      height='100%'
-      onViewportChange={viewport => setViewport(viewport)}
-      mapboxApiAccessToken={MAPBOX_GL_TOKEN}
+    <div
+      className='map-container'
+      style={{width: '100%', height: '100%'}}
+      ref={mapRef}
     >
-      <Pins
-        data={data}
-        handleClick={setPopupInfo}
-      />
+      <ReactMapGL
+        {...viewport}
 
-      {popupInfo && (
-        <Popup
-          tipSize={5}
-          anchor="top"
-          longitude={popupInfo.Longitude}
-          latitude={popupInfo.Latitude}
-          closeOnClick={false}
-          onClose={setPopupInfo}
-        >
-          {popupInfo.Name}
-        </Popup>
-      )}
-    </ReactMapGL>
+        /* todo: need to calculate exact pixel values instead of css percentages */
+        width='100%'
+        height='100%'
+        onViewportChange={viewport => setViewport(viewport)}
+        mapboxApiAccessToken={MAPBOX_GL_TOKEN}
+      >
+        <Pins
+          data={data}
+          handleClick={setPopupInfo}
+        />
+
+        {popupInfo && (
+          <Popup
+            tipSize={5}
+            anchor="top"
+            longitude={popupInfo.Longitude}
+            latitude={popupInfo.Latitude}
+            closeOnClick={false}
+            onClose={setPopupInfo}
+          >
+            {popupInfo.Name}
+          </Popup>
+        )}
+      </ReactMapGL>
+    </div>
   );
 }
 
-function computeBoundingBox(data) {
+function computeBoundingBox(data, viewport) {
   const line = lineString(data.map(point => [point.Longitude, point.Latitude]));
   const [minLng, minLat, maxLng, maxLat] = bbox(line);
-  const vp = new WebMercatorViewport(DEFAULT_VIEWPORT);
+  const vp = new WebMercatorViewport(viewport);
 
   return vp.fitBounds(
     [[minLng, minLat], [maxLng, maxLat]], {
