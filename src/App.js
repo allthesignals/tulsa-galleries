@@ -32,26 +32,26 @@ function App() {
   }, []);
 
   return (
-    <>
-      <Header
-        float={isMapVisible}
-      />
+    <div className='flex flex-col h-full'>
+      <Header/>
 
-      {isMapVisible ?
+      <div className='flex flex-col sm:flex-row h-full'>
         <Map
+          className='basis-2/3'
           data={galleries}
         />
-      : <List
+        <List
+          className='basis-1/3'
           data={galleries}
         />
-      }
+      </div>
 
-      <MapToggle
+      {/* <MapToggle
         handleClick={() => toggleMap(!isMapVisible)}
       >
         <h1>{ isMapVisible ? 'List' : 'Map' }</h1>
-      </MapToggle>
-    </>
+      </MapToggle> */}
+    </div>
   );
 }
 

@@ -35,8 +35,7 @@ const Map = function (props) {
 
   return (
     <div
-      className='map-container'
-      style={{width: '100%', height: '100%'}}
+      className={`map-container ${props.className}`}
       ref={mapRef}
     >
       <ReactMapGL
@@ -77,7 +76,8 @@ function computeBoundingBox(data, viewport) {
 
   return vp.fitBounds(
     [[minLng, minLat], [maxLng, maxLat]], {
-      padding: 20
+      // note: certain padding values cannot exceed some height/width combo for some reason
+      padding: 40,
     },
   );
 }
