@@ -6,6 +6,7 @@ const SIZE = 40;
 const Marker = (props) => (
   <MapboxMarker { ...props }
     offsetTop={-SIZE}
+    offsetLeft={-15}
   >
     <img
       src="/images/art-pin.png"

@@ -44,12 +44,6 @@ function App() {
           data={galleries}
         />
       </div>
-
-      {/* <MapToggle
-        handleClick={() => toggleMap(!isMapVisible)}
-      >
-        <h1>{ isMapVisible ? 'List' : 'Map' }</h1>
-      </MapToggle> */}
     </div>
   );
 }

@@ -8,7 +8,7 @@ const List = function (props) {
 
   return (
     <div className={`${props.className}`}>
-      <div className='container mx-auto p-12'>
+      <div className='container mx-auto p-2'>
         {data.map((gallery, index) =>
           <div
             key={`list-item-${index}`}

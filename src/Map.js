@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
-import ReactMapGL, { Popup, WebMercatorViewport } from 'react-map-gl';
+import ReactMapGL, { WebMercatorViewport } from 'react-map-gl';
 import bbox from '@turf/bbox';
 import { lineString } from '@turf/helpers';
 import Pins from './Pins.js';
+import Popup from './Popup.js';
 
 const MAPBOX_GL_TOKEN = 
   'pk.eyJ1Ijoid21hdHRnYXJkbmVyIiwiYSI6ImNreWF4eTlhNzBhMjkybnBscWwwcTA2M3EifQ.GRfK3-Kc7CC72BDwfywAsQ';
@@ -35,7 +36,7 @@ const Map = function (props) {
 
   return (
     <div
-      className={`map-container ${props.className}`}
+      className={`map-container ${props.className} relative`}
       ref={mapRef}
     >
       <ReactMapGL
@@ -49,22 +50,24 @@ const Map = function (props) {
       >
         <Pins
           data={data}
-          handleClick={setPopupInfo}
-        />
+          handleClick={(pin) => {
+            setPopupInfo(pin);
 
-        {popupInfo && (
-          <Popup
-            tipSize={5}
-            anchor="top"
-            longitude={popupInfo.Longitude}
-            latitude={popupInfo.Latitude}
-            closeOnClick={false}
-            onClose={setPopupInfo}
-          >
-            {popupInfo.Name}
-          </Popup>
-        )}
+            setViewport({
+              ...viewport,
+              longitude: pin.Longitude,
+              latitude: pin.Latitude,
+            })
+          }}
+        />
       </ReactMapGL>
+
+      {popupInfo && (
+        <Popup
+          onClose = {() => {setPopupInfo(null)}}
+          popupInfo = {popupInfo}
+        />
+      )}
     </div>
   );
 }
