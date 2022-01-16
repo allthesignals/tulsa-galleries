@@ -9,6 +9,7 @@ const Marker = (props) => (
     offsetLeft={-15}
   >
     <img
+      className='cursor-pointer'
       src="/images/art-pin.png"
       alt="pin"
       style={{ height: SIZE }}

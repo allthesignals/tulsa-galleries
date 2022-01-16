@@ -57,6 +57,7 @@ const Map = function (props) {
               ...viewport,
               longitude: pin.Longitude,
               latitude: pin.Latitude,
+              transitionDuration: 250,
             })
           }}
         />

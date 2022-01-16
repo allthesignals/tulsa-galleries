@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Header = (props) => (
+const Header = () => (
   <div className='w-full'>
     <div className="bg-national-flag-blue border-b-12 border-mustard p-2 shadow-md">
       <div className="container mx-auto">
